@@ -41,7 +41,7 @@
             padding: 40px 50px;
             display: none;
             flex-direction: column;
-            justify-content: center;
+            justify-content: flex-start; /* чтобы контент не прилипал к верху, но и не обрезался */
             background: var(--bg);
             transition: opacity 0.4s;
             overflow-y: auto;
@@ -65,27 +65,206 @@
         table { border-collapse: collapse; width: 100%; margin: 10px 0; font-size: 0.95em; }
         th, td { padding: 8px 12px; text-align: left; border-bottom: 1px solid var(--border); }
         th { color: var(--accent); font-weight: 600; }
-        .footer-controls { display: flex; justify-content: center; gap: 20px; padding: 10px; background: var(--card); border-top: 1px solid var(--border); position: relative; z-index: 10; }
-        button { background: var(--border); color: var(--text); border: none; border-radius: 8px; padding: 8px 20px; font-size: 0.95em; cursor: pointer; transition: background 0.2s; }
-        button:hover { background: var(--accent); color: #000; }
-        .page-indicator { color: var(--text-secondary); padding: 8px 0; font-size: 0.85em; display: flex; align-items: center; }
-        .tooltip { position: relative; cursor: help; border-bottom: 1px dashed var(--accent); color: var(--accent); }
-        .tooltip .tooltip-text { visibility: hidden; opacity: 0; position: absolute; bottom: 100%; left: 0; background: #1e2530; border: 1px solid var(--accent); padding: 10px 14px; border-radius: 8px; font-size: 0.85em; color: var(--text); white-space: normal; width: 280px; transition: opacity 0.3s, visibility 0.3s; z-index: 20; pointer-events: none; }
-        .tooltip:hover .tooltip-text { visibility: visible; opacity: 1; }
-        .modal-trigger { display: inline-block; margin: 8px 0; padding: 8px 16px; background: var(--accent); color: #000; border-radius: 6px; cursor: pointer; font-weight: 600; transition: background 0.2s; }
-        .modal-trigger:hover { background: #80c0ff; }
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 30; justify-content: center; align-items: center; cursor: pointer; }
-        .modal-overlay.active { display: flex; }
-        .modal { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 30px; max-width: 700px; width: 90%; max-height: 80vh; overflow-y: auto; position: relative; cursor: default; }
-        .modal .close { position: absolute; top: 10px; right: 15px; font-size: 1.5em; cursor: pointer; color: var(--text-secondary); }
-        .modal .close:hover { color: #fff; }
-        @keyframes fadeIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
-        .animate-in { animation: fadeIn 0.6s ease-out; }
-        .step-list { counter-reset: step; margin-left:0; padding-left:0; }
-        .step-list li { counter-increment: step; list-style: none; padding: 12px 0 12px 50px; position: relative; margin-bottom: 8px; }
-        .step-list li::before { content: counter(step); position: absolute; left:0; top:10px; width:32px; height:32px; background: var(--accent); color:#000; font-weight:700; border-radius:50%; display:flex; align-items:center; justify-content:center; }
-        .access-denied { display: flex; align-items: center; justify-content: center; height: 100vh; text-align: center; background: var(--bg); color: var(--text); font-family: monospace; }
-        .access-denied h2 { color: #f87171; margin-bottom: 1rem; border-bottom: none; }
+        .footer-controls {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            padding: 10px;
+            background: var(--card);
+            border-top: 1px solid var(--border);
+            position: relative;
+            z-index: 10;
+        }
+        button {
+            background: var(--border);
+            color: var(--text);
+            border: none;
+            border-radius: 8px;
+            padding: 8px 20px;
+            font-size: 0.95em;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        button:hover {
+            background: var(--accent);
+            color: #000;
+        }
+        .page-indicator {
+            color: var(--text-secondary);
+            padding: 8px 0;
+            font-size: 0.85em;
+            display: flex;
+            align-items: center;
+        }
+        /* Интерактивные элементы */
+        .tooltip {
+            position: relative;
+            cursor: help;
+            border-bottom: 1px dashed var(--accent);
+            color: var(--accent);
+        }
+        .tooltip .tooltip-text {
+            visibility: hidden;
+            opacity: 0;
+            position: absolute;
+            bottom: 100%;
+            left: 0;
+            background: #1e2530;
+            border: 1px solid var(--accent);
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 0.85em;
+            color: var(--text);
+            white-space: normal;
+            width: 280px;
+            transition: opacity 0.3s, visibility 0.3s;
+            z-index: 20;
+            pointer-events: none;
+        }
+        .tooltip:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+        .modal-trigger {
+            display: inline-block;
+            margin: 8px 0;
+            padding: 8px 16px;
+            background: var(--accent);
+            color: #000;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+        .modal-trigger:hover {
+            background: #80c0ff;
+        }
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 30;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
+        .modal-overlay.active {
+            display: flex;
+        }
+        .modal {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 30px;
+            max-width: 700px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+            cursor: default;
+        }
+        .modal .close {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 1.5em;
+            cursor: pointer;
+            color: var(--text-secondary);
+        }
+        .modal .close:hover {
+            color: #fff;
+        }
+        @keyframes fadeIn {
+            from { opacity:0; transform:translateY(10px); }
+            to { opacity:1; transform:translateY(0); }
+        }
+        .animate-in {
+            animation: fadeIn 0.6s ease-out;
+        }
+        .step-list {
+            counter-reset: step;
+            margin-left:0;
+            padding-left:0;
+        }
+        .step-list li {
+            counter-increment: step;
+            list-style: none;
+            padding: 12px 0 12px 50px;
+            position: relative;
+            margin-bottom: 8px;
+        }
+        .step-list li::before {
+            content: counter(step);
+            position: absolute;
+            left:0;
+            top:10px;
+            width:32px;
+            height:32px;
+            background: var(--accent);
+            color:#000;
+            font-weight:700;
+            border-radius:50%;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+        }
+        .access-denied {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            text-align: center;
+            background: var(--bg);
+            color: var(--text);
+            font-family: monospace;
+        }
+        .access-denied h2 {
+            color: #f87171;
+            margin-bottom: 1rem;
+            border-bottom: none;
+        }
+
+        /* ========== МОБИЛЬНЫЕ ОТСТУПЫ ========== */
+        @media (max-width: 768px) {
+            .slide {
+                padding: 80px 20px 60px 20px; /* увеличенный отступ сверху и снизу */
+                justify-content: flex-start;
+            }
+            h1 {
+                font-size: 1.8em;
+            }
+            h2 {
+                font-size: 1.4em;
+            }
+            .grid {
+                grid-template-columns: 1fr; /* карточки в столбик */
+            }
+            .footer-controls {
+                padding: 8px;
+            }
+            button {
+                padding: 6px 16px;
+                font-size: 0.85em;
+            }
+        }
+        @media (max-width: 480px) {
+            .slide {
+                padding: 70px 15px 50px 15px;
+            }
+            h1 {
+                font-size: 1.6em;
+            }
+            h2 {
+                font-size: 1.3em;
+            }
+            p, li {
+                font-size: 0.95em;
+            }
+        }
     </style>
 </head>
 <body>
@@ -348,7 +527,6 @@
         }
     }, { passive: true });
 
-    // Инициализация
     showSlide(0);
 </script>
 
